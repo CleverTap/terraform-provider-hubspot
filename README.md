@@ -38,11 +38,14 @@ Update, Delete and Import operations on Hubspot users.
 12. Get the `client_secret` from `Developer account -> YourApp -> Auth`.<br>
 12. Send a `POST` request to this API endpoint.<br>
 `https://api.hubapi.com/oauth/v1/token`
-Content type for this request `Content-Type : application/x-www-form-urlencoded;charset=utf-8`
+Content type for this request `Content-Type : application/x-www-form-urlencoded;charset=utf-8`<br>
 Body
 ```
-grant_type=authorization_code&client_id=e12a5226-464d-4943-b968-9a06c2c69f80&client_secret=7e9bcdff-a598-49ac-b528-84af87c91e60&redirect_uri=https://www.hubspot.com/&code=06c7955d-777e-44a6-beff-5c2a10e80d06
+grant_type=authorization_code&client_id=e12a5226-464d-4943-b968-9a06c2c69f80&
+client_secret=7e9bcdff-a598-49ac-b528-84af87c91e60&redirect_uri=https://www.hubspot.com/&
+code=06c7955d-777e-44a6-beff-5c2a10e80d06
 ```
+<br>
 Replace `client_id`, `client_secret`, `redirect_uri` and `code`.<br>
 13. In the response you will get `refresh_token`.<br>
 14. You can also refer to this page for Refresh Token generation steps. <br> (https://developers.hubspot.com/docs/api/oauth-quickstart-guide) <br>
