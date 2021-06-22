@@ -8,6 +8,7 @@ Update, Delete and Import operations on Hubspot users.
 * [Go](https://golang.org/doc/install) >= 1.16 (To build the provider plugin)<br>
 * [Terraform](https://www.terraform.io/downloads.html) >= 0.13.x <br/>
 * [Hubspot](https://www.hubspot.com/) Account (APIs are supported in all plans.)
+* [Hubspot Develop Account](https://developers.hubspot.com/) 
 * [Hubspot API Documentation](https://developers.hubspot.com/docs/api/settings/user-provisioning)
 
 
@@ -15,15 +16,36 @@ Update, Delete and Import operations on Hubspot users.
 
 ### Setup<a id="setup"></a>
 1. Create a Hubspot account at https://www.hubspot.com/<br>
-2. Go to your developer account.
-3. Click on `Manage Apps` or `Create Apps`.
-4. Click on `Create app`. Create app with required information. This app will provide us with Client Id, Client Secret and Scopes which will be needed to configure our provider and to make request.<br>
+2. Create a developer account at https://developers.hubspot.com/<br>
+3. Go to your developer account.<br>
+4. Go to `Create an App -> Create app`.<br>
+5. Create app with required information. This app will provide us with Client Id, Client Secret and Scopes which will be needed to configure our provider and to make request.<br>
+6. You need to verify this app.
 
 ### API Authentication
 1. Hubspot uses OAuth for authentication which provides Access Token to authenticate to the API. <br>
 2. Provider need Client Id, Client Secret and Refresh Token to generate Access Token. <br>
-3. Get the Client Id and Client Secret from your app. <br>  
-4. For generating Refresh Token, follow this page <br> (https://developers.hubspot.com/docs/api/oauth-quickstart-guide) <br>
+3. Go to `Developer account -> YourApp -> Auth`.<br>
+4. Go to `Scopes` section.<br>
+5. Add `oauth`, `settings.users.write` and `settings.users.read` scopes.<br>
+6. Get `Client Id`.<br>
+7. Replace `scope`, `redirect_uri` and `client_id` in the below URL. 
+`https://app.hubspot.com/oauth/authorize?scope=contacts%20social&redirect_uri=https://www.example.com/&client_id=xxxxxxxx"`
+8. `redirect_uri` can be any URL. The user will be redirected to this URL after they authorize your app for the requested scopes. For production applications, https is required.<br>
+9. Paste the above URL in your browser. Choose the account you want to connect to this app and grant access. <br>
+10. You will be redirected to `redirect_uri`.<br>
+11. Copy the `code` query parameter from the URL.<br>
+12. Get the `client_secret` from `Developer account -> YourApp -> Auth`.<br>
+12. Send a `POST` request to this API endpoint.<br>
+`https://api.hubapi.com/oauth/v1/token`
+Content type for this request `Content-Type : application/x-www-form-urlencoded;charset=utf-8`
+Body
+```
+grant_type=authorization_code&client_id=e12a5226-464d-4943-b968-9a06c2c69f80&client_secret=7e9bcdff-a598-49ac-b528-84af87c91e60&redirect_uri=https://www.hubspot.com/&code=06c7955d-777e-44a6-beff-5c2a10e80d06
+```
+Replace `client_id`, `client_secret`, `redirect_uri` and `code`.<br>
+13. In the response you will get `refresh_token`.<br>
+14. You can also refer to this page for Refresh Token generation steps. <br> (https://developers.hubspot.com/docs/api/oauth-quickstart-guide) <br>
 
 
 ## Building The Provider
@@ -140,5 +162,8 @@ output "user" {
   `
 * The API (https://developers.hubspot.com/docs/api/settings/user-provisioning).
 3. `Super Admin` role can not be assigned to a user through API. It should be done through UI. But it can be changed to another role through API.<br>
-4. A user's Role can not be updated to `No Role`.
+4. A user's Role can not be updated to `No Role`.<br>
+5. You have to get verified your app.<br>
+6. `Super Admin` can not be deleted through API. Only can be deleted from UI.<br>
+7. Hubspot doesn't provide user activation and deactivation. <br>
 
